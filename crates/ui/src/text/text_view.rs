@@ -625,7 +625,11 @@ impl Element for TextView {
                 highlight_theme,
                 rx,
                 tx_result,
-                Duration::from_millis(200),
+                // Process text updates immediately. The 200ms debounce used in
+                // v0.5.1 causes streaming callers that update more frequently
+                // than the debounce window to keep resetting the timer, so no
+                // new parsed content is published until the stream pauses.
+                Duration::ZERO,
                 code_block_actions,
             ))
             .detach();
